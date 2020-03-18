@@ -16,7 +16,6 @@
         document.body.classList.remove('widget-loaded');
 
         // STEP 2) Initializes the Freshchat widget by calling initFreshchat method
-        //Initialize Freshchat widget with bindings
         console.log('call initialize widget');
         initFreshChat();
 
@@ -27,10 +26,7 @@
           if(window.fcWidget) {
             window.fcWidget.off('widget:destroyed');
             window.fcWidget.off('user:cleared');
-            window.fcWidget.off('message:received');
-            window.fcWidget.off('user:created');
           }
-          //Initialize freshchat with bindings again
 
         // STEP 8) On widget:destroyed, initializes the widget again.
           console.log('on widget:destroyed callback, initialize widget again');
@@ -41,8 +37,6 @@
         console.log('register for user:cleared with callback');
         window.fcWidget.on('user:cleared', function(response) {
           if(!response){
-            //If user existed while clear was called, call destroy widget.
-            //On success it will callback widget:destroyed
         // STEP 7) On user:clear callback, calls fcWidget.destroy()
         console.log('on user:cleared callback call destroy()')
             window.fcWidget.destroy();
