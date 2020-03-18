@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>Safely Clear User</title>
+  </head>
+  <body>
+    <script>
+      function initFreshChat() {
+        window.fcWidget.init({
+          token: "1f4d45e7-8818-4338-99f8-810c500120ed",
+          host: "https://wchat.freshchat.com"
+        });
+        console.log('widget initialized');
+      }
+
+      function loadFreshChat() {
+        document.body.classList.remove('widget-loaded');
+
+        // STEP 2) Initializes the Freshchat widget by calling initFreshchat method
+        //Initialize Freshchat widget with bindings
+        console.log('call initialize widget');
+        initFreshChat();
+
+        // STEP 3) Registers for widget:destroyed with callback method
+        console.log('register for widget:destroyed with callback');
+        window.fcWidget.on('widget:destroyed', function() {
+          //Unbind the event bindings
+          if(window.fcWidget) {
+            window.fcWidget.off('widget:destroyed');
+            window.fcWidget.off('user:cleared');
+            window.fcWidget.off('message:received');
+            window.fcWidget.off('user:created');
+          }
+          //Initialize freshchat with bindings again
+
+        // STEP 8) On widget:destroyed, initializes the widget again.
+          console.log('on widget:destroyed callback, initialize widget again');
+          initFreshChat();
+        });
+
+        // STEP 4) Registers for user:cleared with callback method
+        console.log('register for user:cleared with callback');
+        window.fcWidget.on('user:cleared', function(response) {
+          if(!response){
+            //If user existed while clear was called, call destroy widget.
+            //On success it will callback widget:destroyed
+        // STEP 7) On user:clear callback, calls fcWidget.destroy()
+        console.log('on user:cleared callback call destroy()')
+            window.fcWidget.destroy();
+          }
+        });
+
+        // STEP 5) Checks if user exists
+        console.log('check if user exists');
+        //Check if user exists
+        window.fcWidget.user.isExists().then(function(response) {
+          //If user exists, call clear user. On success it will call user:cleared
+          if(response && response.data) {
+        
+        // STEP 6) If user exists, calls user.clear();
+            console.log('user exists. call user.clear()');
+            window.fcWidget.user.clear();
+          } else {
+            console.log('user does not exist');
+          }
+        });
+      }
+
+      // STEP 1) Fetches widget.js and calls loadFreshChat when done.
+      console.log('load widget.js');
+      function initialize(i,t){var e;i.getElementById(t)?loadFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=loadFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
+    </script>
+  </body>
+</html>
